@@ -4,7 +4,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	if(localStorage.getItem('itemlist')==null) {
 		fetch('https://fakestoreapi.com/products').then(response=>response.text()).then(list=>localStorage.setItem('itemlist',list));
 	}
-	localStorage.setItem('cartlist');
 	const list = JSON.parse(localStorage.getItem('itemlist'));
 	const prodlist = document.getElementById('product-list');
 	for(let i = 0; i < list.length; i++) {
@@ -19,23 +18,25 @@ window.addEventListener('DOMContentLoaded', () => {
 		desc.textContent = list[i]['title'];
 		const price = listing.shadowRoot.appendChild(document.createElement('p'));
 		price.setAttribute('class','price');
-		price.textContent = list[i]['price'];
+		price.textContent = '$' + list[i]['price'];
 		const cart = listing.shadowRoot.appendChild(document.createElement('button'));
-		cart.setAttribute('onclick',"alert('Added to cart!')");
+		cart.setAttribute('onclick',"addtocart(this)");
 		cart.textContent = "Add to Cart";
-		cart.addEventListener('click', butswitch);
 	}
+	const cartlist = {};
 });
 const cartnum = document.getElementById("cart-count");
-function butswitch(e) {
-	if(e.textContent != "Add to Cart") {
-		e.textContent = "Remove from Cart";
-		let temp = parseInt(cartnum.textContent) + 1;
-		cartnum.textContent = temp;
-	}
-	else {
-		e.textContent = "Add to Cart";
-		let temp = parseInt(cartnum.textContent)-1;
-		cartnum.textContent = temp;
-	}
+function addtocart(e) {
+	e.textContent = "Remove from Cart";
+	e.setAttribute('onclick',"removefromcart(this)");
+	alert("Added to cart");
+	let temp = parseInt(cartnum.textContent) + 1;
+	cartnum.textContent = temp;
+}
+function removefromcart(e) {
+	e.textContent = "Add to Cart";
+	e.setAttribute('onclick',"addtocart(this)");
+	alert("Removed from cart");
+	let temp = parseInt(cartnum.textContent) - 1;
+	cartnum.textContent = temp;
 }
