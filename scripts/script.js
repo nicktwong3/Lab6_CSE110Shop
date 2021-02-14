@@ -1,11 +1,36 @@
 // Script.js
 let cartlist = {};
 const cartnum = document.getElementById("cart-count");
+let list = [];
 window.addEventListener('DOMContentLoaded', () => {
+	load();
+});
+function addtocart(e) {
+	e.textContent = "Remove from Cart";
+	e.setAttribute('onclick',"removefromcart(this);");
+	cartlist[e.getAttribute('id')]=true;
+	localStorage.setItem('cartlist',JSON.stringify(cartlist));
+	alert("Added to cart");
+	let temp = parseInt(cartnum.textContent) + 1;
+	cartnum.textContent = temp;
+}
+function removefromcart(e) {
+	e.textContent = "Add to Cart";
+	e.setAttribute('onclick',"addtocart(this);");
+	cartlist[e.getAttribute('id')]=false;
+	localStorage.setItem('cartlist',JSON.stringify(cartlist));
+	alert("Removed from cart");
+	let temp = parseInt(cartnum.textContent) - 1;
+	cartnum.textContent = temp;
+}
+async function load() {
 	if(localStorage.getItem('itemlist')==null) {
-		fetch('https://fakestoreapi.com/products').then(response=>response.text()).then(list=>localStorage.setItem('itemlist',list));
+		const response = await fetch('https://fakestoreapi.com/products');
+		const elephant = await response.text();
+		localStorage.setItem('itemlist',elephant);
 	}
-	const list = JSON.parse(localStorage.getItem('itemlist'));
+	else {}
+	list = await JSON.parse(localStorage.getItem('itemlist'));
 	if(localStorage.getItem('cartlist')!=null) {
 		cartlist = JSON.parse(localStorage.getItem('cartlist'));
 	}
@@ -43,22 +68,4 @@ window.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 	localStorage.setItem('cartlist',JSON.stringify(cartlist));
-});
-function addtocart(e) {
-	e.textContent = "Remove from Cart";
-	e.setAttribute('onclick',"removefromcart(this);");
-	cartlist[e.getAttribute('id')]=true;
-	localStorage.setItem('cartlist',JSON.stringify(cartlist));
-	alert("Added to cart");
-	let temp = parseInt(cartnum.textContent) + 1;
-	cartnum.textContent = temp;
-}
-function removefromcart(e) {
-	e.textContent = "Add to Cart";
-	e.setAttribute('onclick',"addtocart(this);");
-	cartlist[e.getAttribute('id')]=false;
-	localStorage.setItem('cartlist',JSON.stringify(cartlist));
-	alert("Removed from cart");
-	let temp = parseInt(cartnum.textContent) - 1;
-	cartnum.textContent = temp;
 }
